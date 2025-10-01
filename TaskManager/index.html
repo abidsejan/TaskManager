@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-tasks"></i> TaskManager</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-link active" data-view="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-link" data-view="tasks">
+                    <i class="fas fa-list-check"></i> All Tasks
+                </a>
+                <a href="#" class="nav-link" data-view="calendar">
+                    <i class="fas fa-calendar-alt"></i> Calendar
+                </a>
+                <a href="#" class="nav-link" data-view="analytics">
+                    <i class="fas fa-chart-pie"></i> Analytics
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="export-btn" class="icon-btn">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button id="import-btn" class="icon-btn">
+                    <i class="fas fa-upload"></i>
+                </button>
+                <input type="file" id="import-file" accept=".json" style="display: none;">
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h2>Dashboard</h2>
+                    <div class="search-container">
+                        <input type="text" id="search" placeholder="Search tasks...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="notification-container">
+                        <button id="notification-btn" class="icon-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <div id="notification-dropdown" class="notification-dropdown">
+                            <h3>Notifications</h3>
+                            <div class="notification-list">
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p>Task "Project Proposal" is due tomorrow</p>
+                                        <span>2 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p>You completed 5 tasks this week</p>
+                                        <span>1 day ago</span>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p>New feature: Drag and drop tasks to reorder</p>
+                                        <span>2 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://www.clipartmax.com/png/small/333-3336322_random-guy-calls-me-cute-gt-random-cartoon-guy-png.png" alt="User">
+                        <span>Abid Hasan</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-tasks">0</h3>
+                            <p>Total Tasks</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="completed-tasks">0</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="pending-tasks">0</h3>
+                            <p>Pending</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="overdue-tasks">0</h3>
+                            <p>Overdue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section">
+                    <h3>Today's Progress</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="progress-percentage">0%</span>
+                            <span id="progress-text">0 of 0 tasks completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Categories -->
+                <div class="categories-section">
+                    <h3>Task Categories</h3>
+                    <div class="categories-grid">
+                        <div class="category-card" data-category="personal">
+                            <div class="category-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Personal</h4>
+                            <p class="category-count">0 tasks</p>
+                        </div>
+                        <div class="category-card" data-category="work">
+                            <div class="category-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <h4>Work</h4>
+                            <p class="category-count">0 tasks</p>
+                        </div>
+                        <div class="category-card" data-category="shopping">
+                            <div class="category-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h4>Shopping</h4>
+                            <p class="category-count">0 tasks</p>
+                        </div>
+                        <div class="category-card" data-category="health">
+                            <div class="category-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <h4>Health</h4>
+                            <p class="category-count">0 tasks</p>
+                        </div>
+                        <div class="category-card" data-category="other">
+                            <div class="category-icon">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                            <h4>Other</h4>
+                            <p class="category-count">0 tasks</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Tasks -->
+                <div class="upcoming-section">
+                    <div class="section-header">
+                        <h3>Upcoming Tasks</h3>
+                        <a href="#" class="view-all" data-view="tasks">View All</a>
+                    </div>
+                    <div id="upcoming-tasks" class="task-list">
+                        <!-- Tasks will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks View -->
+            <div id="tasks-view" class="view">
+                <div class="tasks-header">
+                    <h2>Task Management</h2>
+                    <button id="add-task-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Task
+                    </button>
+                </div>
+
+                <div class="tasks-controls">
+                    <div class="filter-container">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="overdue">Overdue</button>
+                    </div>
+                    <div class="sort-container">
+                        <label for="sort">Sort by:</label>
+                        <select id="sort">
+                            <option value="date-added">Date Added</option>
+                            <option value="due-date">Due Date</option>
+                            <option value="priority">Priority</option>
+                            <option value="title">Title</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tasks-container">
+                    <div id="task-list" class="task-list">
+                        <!-- Tasks will be dynamically added here -->
+                    </div>
+                    <div id="empty-state" class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No tasks found. Add a new task to get started!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div id="calendar-view" class="view">
+                <h2>Task Calendar</h2>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prev-month" class="calendar-nav">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h3 id="current-month">January 2023</h3>
+                        <button id="next-month" class="calendar-nav">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                        <!-- Calendar days will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="calendar-tasks">
+                    <h3>Tasks for <span id="selected-date">Today</span></h3>
+                    <div id="calendar-task-list" class="task-list">
+                        <!-- Tasks for selected date will be shown here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="view">
+                <h2>Task Analytics</h2>
+                <div class="analytics-container">
+                    <div class="analytics-card">
+                        <h3>Task Completion</h3>
+                        <div class="chart-container">
+                            <canvas id="completion-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Task Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="distribution-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Productivity Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="trends-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="add-task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Task</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="due-date">Due Date</label>
+                        <input type="date" id="due-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="due-time">Due Time</label>
+                        <input type="time" id="due-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="personal">Personal</option>
+                            <option value="work">Work</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="health">Health</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags">Tags (comma separated)</label>
+                        <input type="text" id="tags" placeholder="e.g. urgent, meeting, project">
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder">Set Reminder</label>
+                        <select id="reminder">
+                            <option value="none">No Reminder</option>
+                            <option value="15min">15 minutes before</option>
+                            <option value="30min">30 minutes before</option>
+                            <option value="1hour">1 hour before</option>
+                            <option value="1day">1 day before</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="edit-task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Task</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label for="edit-title">Title</label>
+                    <input type="text" id="edit-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <textarea id="edit-description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-due-date">Due Date</label>
+                        <input type="date" id="edit-due-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-due-time">Due Time</label>
+                        <input type="time" id="edit-due-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-priority">Priority</label>
+                        <select id="edit-priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-category">Category</label>
+                        <select id="edit-category">
+                            <option value="personal">Personal</option>
+                            <option value="work">Work</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="health">Health</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-tags">Tags (comma separated)</label>
+                        <input type="text" id="edit-tags">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-reminder">Set Reminder</label>
+                        <select id="edit-reminder">
+                            <option value="none">No Reminder</option>
+                            <option value="15min">15 minutes before</option>
+                            <option value="30min">30 minutes before</option>
+                            <option value="1hour">1 hour before</option>
+                            <option value="1day">1 day before</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Permission Modal -->
+    <div id="notification-permission-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Enable Notifications</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Would you like to enable browser notifications for task reminders?</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="deny-notifications">No, thanks</button>
+                    <button type="button" class="btn btn-primary" id="allow-notifications">Enable</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

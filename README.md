@@ -25,3 +25,8 @@ A simple, lightweight application to **create, update, delete, and manage tasks*
 1. Clone this repository:  
    ```bash
    git clone https://github.com/abidsejan/TaskManager.git
+---
+
+### View of TaskManager
+
+https://github.com/user-attachments/assets/b133a015-8669-459a-bc76-95b92ffbd35f
